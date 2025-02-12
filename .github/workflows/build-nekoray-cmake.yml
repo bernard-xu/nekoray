@@ -156,7 +156,7 @@ jobs:
       - name: Checking out sources
         uses: actions/checkout@v3
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: download-artifact
       - name: Pack
