@@ -181,6 +181,16 @@
           <property name="text">
            <string>System Proxy</string>
           </property>
+           <property name="font">
+              <font>
+                <pointsize>16</pointsize>
+              </font>
+            </property>
+            <property name="styleSheet">
+              <string>
+                color: red;
+              </string>
+            </property>
          </widget>
         </item>
        </layout>
