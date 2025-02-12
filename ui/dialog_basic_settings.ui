@@ -118,13 +118,6 @@
         <widget class="QGroupBox" name="groupBox1">
          <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,8,1,1">
           <item>
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Latency Test URL</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QLineEdit" name="test_latency_url"/>
           </item>
           <item>
@@ -143,13 +136,6 @@
        <item>
         <widget class="QGroupBox" name="horizontalGroupBox">
          <layout class="QHBoxLayout" name="horizontalLayout_12" stretch="0,8,1,1">
-          <item>
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Download Test URL</string>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="MyLineEdit" name="test_download_url"/>
           </item>

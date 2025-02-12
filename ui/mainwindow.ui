@@ -205,19 +205,6 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QToolButton" name="toolButton_url_test">
-        <property name="text">
-         <string>URL Test</string>
-        </property>
-        <property name="popupMode">
-         <enum>QToolButton::InstantPopup</enum>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextUnderIcon</enum>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
@@ -297,11 +284,6 @@
            <column>
             <property name="text">
              <string>Name</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Test Result</string>
             </property>
            </column>
            <column>
@@ -546,11 +528,6 @@
       <string>Current Group</string>
      </property>
      <addaction name="actionfake_5"/>
-     <addaction name="menu_tcp_ping"/>
-     <addaction name="menu_url_test"/>
-     <addaction name="menu_full_test"/>
-     <addaction name="menu_stop_testing"/>
-     <addaction name="menu_clear_test_result"/>
      <addaction name="menu_resolve_domain"/>
      <addaction name="separator"/>
      <addaction name="menu_remove_unavailable"/>
@@ -673,30 +650,6 @@
     <string>Copy Link</string>
    </property>
   </action>
-  <action name="menu_tcp_ping">
-   <property name="text">
-    <string notr="true">Tcp Ping</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Alt+T</string>
-   </property>
-  </action>
-  <action name="menu_url_test">
-   <property name="text">
-    <string notr="true">Url Test</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Alt+U</string>
-   </property>
-  </action>
-  <action name="menu_clear_test_result">
-   <property name="text">
-    <string>Clear Test Result</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Alt+C</string>
-   </property>
-  </action>
   <action name="menu_export_config">
    <property name="text">
     <string>Export %1 config</string>
@@ -788,14 +741,6 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Alt+R</string>
-   </property>
-  </action>
-  <action name="menu_full_test">
-   <property name="text">
-    <string>Full Test</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Alt+F</string>
    </property>
   </action>
   <action name="menu_hotkey_settings">
@@ -909,14 +854,6 @@
   <action name="actionRestart_Proxy">
    <property name="text">
     <string>Restart Proxy</string>
-   </property>
-  </action>
-  <action name="menu_stop_testing">
-   <property name="text">
-    <string>Stop Testing</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true">Ctrl+Alt+S</string>
    </property>
   </action>
  </widget>
