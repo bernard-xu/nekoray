@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->toolButton_document, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://matsuridayo.github.io/")); });
     connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://neko-box.pages.dev/喵")); });
     connect(ui->toolButton_update, &QToolButton::clicked, this, [=] { runOnNewThread([=] { CheckUpdate(); }); });
-    connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
+    // connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
 
     // Setup log UI
     ui->splitter->restoreState(DecodeB64IfValid(NekoGui::dataStore->splitter_state));
@@ -334,10 +334,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         neko_set_spmode_vpn(false);
     });
     connect(ui->menu_qr, &QAction::triggered, this, [=]() { display_qr_link(false); });
-    connect(ui->menu_tcp_ping, &QAction::triggered, this, [=]() { speedtest_current_group(0, false); });
-    connect(ui->menu_url_test, &QAction::triggered, this, [=]() { speedtest_current_group(1, false); });
-    connect(ui->menu_full_test, &QAction::triggered, this, [=]() { speedtest_current_group(2, false); });
-    connect(ui->menu_stop_testing, &QAction::triggered, this, [=]() { speedtest_current_group(114514, false); });
     //
     auto set_selected_or_group = [=](int mode) {
         // 0=group 1=select 2=unknown(menu is hide)
@@ -346,18 +342,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     auto move_tests_to_menu = [=](bool menuCurrent_Select) {
         return [=] {
             if (menuCurrent_Select) {
-                ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_tcp_ping);
-                ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_url_test);
-                ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_full_test);
-                ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_stop_testing);
-                ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_clear_test_result);
                 ui->menuCurrent_Select->insertAction(ui->actionfake_4, ui->menu_resolve_domain);
             } else {
-                ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_tcp_ping);
-                ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_url_test);
-                ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_full_test);
-                ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_stop_testing);
-                ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_clear_test_result);
                 ui->menuCurrent_Group->insertAction(ui->actionfake_5, ui->menu_resolve_domain);
             }
             set_selected_or_group(menuCurrent_Select ? 1 : 0);

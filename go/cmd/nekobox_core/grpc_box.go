@@ -10,8 +10,9 @@ import (
 
 	"github.com/matsuridayo/libneko/neko_common"
 	"github.com/matsuridayo/libneko/neko_log"
-	"github.com/matsuridayo/libneko/speedtest"
-	box "github.com/sagernet/sing-box"
+
+	// "github.com/matsuridayo/libneko/speedtest"
+	// box "github.com/sagernet/sing-box"
 	"github.com/sagernet/sing-box/boxapi"
 	boxmain "github.com/sagernet/sing-box/cmd/sing-box"
 
@@ -84,50 +85,50 @@ func (s *server) Stop(ctx context.Context, in *gen.EmptyReq) (out *gen.ErrorResp
 }
 
 func (s *server) Test(ctx context.Context, in *gen.TestReq) (out *gen.TestResp, _ error) {
-	var err error
+	// var err error
 	out = &gen.TestResp{Ms: 0}
 
-	defer func() {
-		if err != nil {
-			out.Error = err.Error()
-		}
-	}()
+	// defer func() {
+	// 	if err != nil {
+	// 		out.Error = err.Error()
+	// 	}
+	// }()
 
-	if in.Mode == gen.TestMode_UrlTest {
-		var i *box.Box
-		var cancel context.CancelFunc
-		if in.Config != nil {
-			// Test instance
-			i, cancel, err = boxmain.Create([]byte(in.Config.CoreConfig))
-			if i != nil {
-				defer i.Close()
-				defer cancel()
-			}
-			if err != nil {
-				return
-			}
-		} else {
-			// Test running instance
-			i = instance
-			if i == nil {
-				return
-			}
-		}
-		// Latency
-		out.Ms, err = speedtest.UrlTest(boxapi.CreateProxyHttpClient(i), in.Url, in.Timeout, speedtest.UrlTestStandard_RTT)
-	} else if in.Mode == gen.TestMode_TcpPing {
-		out.Ms, err = speedtest.TcpPing(in.Address, in.Timeout)
-	} else if in.Mode == gen.TestMode_FullTest {
-		i, cancel, err := boxmain.Create([]byte(in.Config.CoreConfig))
-		if i != nil {
-			defer i.Close()
-			defer cancel()
-		}
-		if err != nil {
-			return
-		}
-		return grpc_server.DoFullTest(ctx, in, i)
-	}
+	// if in.Mode == gen.TestMode_UrlTest {
+	// 	var i *box.Box
+	// 	var cancel context.CancelFunc
+	// 	if in.Config != nil {
+	// 		// Test instance
+	// 		i, cancel, err = boxmain.Create([]byte(in.Config.CoreConfig))
+	// 		if i != nil {
+	// 			defer i.Close()
+	// 			defer cancel()
+	// 		}
+	// 		if err != nil {
+	// 			return
+	// 		}
+	// 	} else {
+	// 		// Test running instance
+	// 		i = instance
+	// 		if i == nil {
+	// 			return
+	// 		}
+	// 	}
+	// 	// Latency
+	// 	out.Ms, err = speedtest.UrlTest(boxapi.CreateProxyHttpClient(i), in.Url, in.Timeout, speedtest.UrlTestStandard_RTT)
+	// } else if in.Mode == gen.TestMode_TcpPing {
+	// 	out.Ms, err = speedtest.TcpPing(in.Address, in.Timeout)
+	// } else if in.Mode == gen.TestMode_FullTest {
+	// 	i, cancel, err := boxmain.Create([]byte(in.Config.CoreConfig))
+	// 	if i != nil {
+	// 		defer i.Close()
+	// 		defer cancel()
+	// 	}
+	// 	if err != nil {
+	// 		return
+	// 	}
+	// 	return grpc_server.DoFullTest(ctx, in, i)
+	// }
 
 	return
 }
