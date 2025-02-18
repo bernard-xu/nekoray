@@ -162,7 +162,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         action.save_sort = true;
         // 表头
         if (logicalIndex == 0) {
-            action.method = GroupSortMethod::ByType;
+            action.method = GroupSortMethod::ByCountry;
         } else if (logicalIndex == 1) {
             action.method = GroupSortMethod::ByAddress;
         } else if (logicalIndex == 2) {
@@ -957,14 +957,14 @@ void MainWindow::refresh_proxy_list_impl(const int &id, GroupSortAction groupSor
             case GroupSortMethod::ByAddress:
             case GroupSortMethod::ByName:
             case GroupSortMethod::ByLatency:
-            case GroupSortMethod::ByType: {
+            case GroupSortMethod::ByCountry: {
                 std::sort(ui->proxyListTable->order.begin(), ui->proxyListTable->order.end(),
                           [=](int a, int b) {
                               QString ms_a;
                               QString ms_b;
-                              if (groupSortAction.method == GroupSortMethod::ByType) {
-                                  ms_a = NekoGui::profileManager->GetProfile(a)->bean->DisplayType();
-                                  ms_b = NekoGui::profileManager->GetProfile(b)->bean->DisplayType();
+                              if (groupSortAction.method == GroupSortMethod::ByCountry) {
+                                  ms_a = NekoGui::profileManager->GetProfile(a)->bean->country;
+                                  ms_b = NekoGui::profileManager->GetProfile(b)->bean->country;
                               } else if (groupSortAction.method == GroupSortMethod::ByName) {
                                   ms_a = NekoGui::profileManager->GetProfile(a)->bean->name;
                                   ms_b = NekoGui::profileManager->GetProfile(b)->bean->name;
