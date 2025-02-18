@@ -2,7 +2,7 @@ name: AUR CI
 on:
   push:
     branches:
-      - main
+      - test
     paths-ignore:
       - '**.md'
       - 'LICENSE'
