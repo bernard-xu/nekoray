@@ -17,6 +17,10 @@ namespace NekoGui_fmt {
         _add(new configItem("country", &country, itemType::string));
     }
 
+    void AbstractBean::SetCountryFromDisplay() {
+        this->country = DisplayCountry();
+    }
+
     QString AbstractBean::ToNekorayShareLink(const QString &type) {
         auto b = ToJson();
         QUrl url;

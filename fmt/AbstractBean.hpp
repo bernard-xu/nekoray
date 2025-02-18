@@ -67,6 +67,8 @@ namespace NekoGui_fmt {
         virtual ExternalBuildResult BuildExternal(int mapping_port, int socks_port, int external_stat) { return {}; };
 
         virtual QString ToShareLink() { return {}; };
+
+        void SetCountryFromDisplay();
     };
 
 } // namespace NekoGui_fmt

@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     themeManager->ApplyTheme(NekoGui::dataStore->theme);
     ui->setupUi(this);
     //
-    connect(ui->menu_start, &QAction::triggered, this, [=]() { neko_start(); });
+    connect(ui->menu_start, &QAction::triggered, this, [=]() { neko_random_start(); });
     connect(ui->menu_stop, &QAction::triggered, this, [=]() { neko_stop(); });
     connect(ui->tabWidget->tabBar(), &QTabBar::tabMoved, this, [=](int from, int to) {
         // use tabData to track tab & gid
@@ -246,7 +246,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->menu_open_config_folder, &QAction::triggered, this, [=] { QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::currentPath())); });
     ui->menu_program_preference->addActions(ui->menu_preferences->actions());
     connect(ui->menu_add_from_clipboard2, &QAction::triggered, ui->menu_add_from_clipboard, &QAction::trigger);
-    connect(ui->actionRestart_Proxy, &QAction::triggered, this, [=] { if (NekoGui::dataStore->started_id>=0) neko_start(NekoGui::dataStore->started_id); });
+    connect(ui->actionRestart_Proxy, &QAction::triggered, this, [=] {
+        if (NekoGui::dataStore->started_id >= 0) neko_random_start(NekoGui::dataStore->started_id); });
     connect(ui->actionRestart_Program, &QAction::triggered, this, [=] { MW_dialog_message("", "RestartProgram"); });
     connect(ui->actionShow_window, &QAction::triggered, this, [=] { tray->activated(QSystemTrayIcon::ActivationReason::Trigger); });
     //
@@ -287,7 +288,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         if (NekoGui::dataStore->started_id == id) {
             neko_stop();
         } else {
-            neko_start(id);
+            neko_random_start(id);
         }
     });
     connect(ui->menuActive_Routing, &QMenu::triggered, this, [=](QAction *a) {
@@ -300,7 +301,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 if (QMessageBox::question(GetMessageBoxParent(), software_name, tr("Load routing and apply: %1").arg(fn) + "\n" + r.DisplayRouting()) == QMessageBox::Yes) {
                     NekoGui::Routing::SetToActive(fn);
                     if (NekoGui::dataStore->started_id >= 0) {
-                        neko_start(NekoGui::dataStore->started_id);
+                        neko_random_start(NekoGui::dataStore->started_id);
                     } else {
                         refresh_status();
                     }
@@ -521,7 +522,7 @@ void MainWindow::dialog_message_impl(const QString &sender, const QString &info)
         }
         if (suggestRestartProxy && NekoGui::dataStore->started_id >= 0 &&
             QMessageBox::question(GetMessageBoxParent(), tr("Confirmation"), tr("Settings changed, restart proxy?")) == QMessageBox::StandardButton::Yes) {
-            neko_start(NekoGui::dataStore->started_id);
+            neko_random_start(NekoGui::dataStore->started_id);
         }
         refresh_status();
     }
@@ -548,7 +549,7 @@ void MainWindow::dialog_message_impl(const QString &sender, const QString &info)
             refresh_proxy_list();
             if (msg.contains("restart")) {
                 if (QMessageBox::question(GetMessageBoxParent(), tr("Confirmation"), tr("Settings changed, restart proxy?")) == QMessageBox::StandardButton::Yes) {
-                    neko_start(NekoGui::dataStore->started_id);
+                    neko_random_start(NekoGui::dataStore->started_id);
                 }
             }
         }
@@ -571,7 +572,7 @@ void MainWindow::dialog_message_impl(const QString &sender, const QString &info)
         } else if (info == "CoreCrashed") {
             neko_stop(true);
         } else if (info.startsWith("CoreStarted")) {
-            neko_start(info.split(",")[1].toInt());
+            neko_random_start(info.split(",")[1].toInt());
         }
     }
 }
@@ -784,7 +785,7 @@ void MainWindow::neko_set_spmode_vpn(bool enable, bool save) {
     NekoGui::dataStore->spmode_vpn = enable;
     refresh_status();
 
-    if (NekoGui::dataStore->vpn_internal_tun && NekoGui::dataStore->started_id >= 0) neko_start(NekoGui::dataStore->started_id);
+    if (NekoGui::dataStore->vpn_internal_tun && NekoGui::dataStore->started_id >= 0) neko_random_start(NekoGui::dataStore->started_id);
 }
 
 void MainWindow::refresh_status(const QString &traffic_update) {
@@ -1027,9 +1028,9 @@ void MainWindow::refresh_proxy_list_impl_refresh_data(const int &id) {
         check->setText(isRunning ? "✓" : Int2String(row + 1));
         ui->proxyListTable->setVerticalHeaderItem(row, check);
 
-        // C0: Type
+        // C0: country
         auto f = f0->clone();
-        f->setText(profile->bean->DisplayType());
+        f->setText(profile->bean->country);
         if (isRunning) f->setForeground(palette().link());
         ui->proxyListTable->setItem(row, 0, f);
 
@@ -1060,6 +1061,12 @@ void MainWindow::refresh_proxy_list_impl_refresh_data(const int &id) {
         f = f0->clone();
         f->setText(profile->traffic_data->DisplayTraffic());
         ui->proxyListTable->setItem(row, 4, f);
+
+        // C5: Type
+        f = f0->clone();
+        f->setText(profile->bean->DisplayType());
+        if (isRunning) f->setForeground(palette().link());
+        ui->proxyListTable->setItem(row, 5, f);
     }
 }
 
@@ -1464,7 +1471,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             // take over by shortcut_esc
             break;
         case Qt::Key_Enter:
-            neko_start();
+            neko_random_start();
             break;
         default:
             QMainWindow::keyPressEvent(event);

@@ -14,6 +14,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QRandomGenerator>
 
 // ext core
 
@@ -551,4 +552,45 @@ void MainWindow::CheckUpdate() {
         }
     });
 #endif
+}
+
+void MainWindow::neko_random_start(int _id) {
+    MW_show_log(tr("Entering neko_random_start with _id=%1").arg(_id));
+    if (NekoGui::dataStore->prepare_exit) {
+        MW_show_log("Preparation to exit detected. Aborting random start.");
+        return;
+    }
+
+    auto ents = get_now_selected_list();
+    auto ent = (_id < 0 && !ents.isEmpty()) ? ents.first() : NekoGui::profileManager->GetProfile(_id);
+    if (!ent) {
+        MW_show_log("No valid entity found.");
+        return;
+    }
+    if (ent->bean->country.isEmpty()) {
+        MW_show_log("Entity has no country specified.");
+        return;
+    }
+
+    auto profiles = NekoGui::profileManager->CurrentGroup()->ProfilesWithOrder();
+    // MW_show_log(tr("Current group has %1 profiles.").arg(profiles.size()));
+    QList<std::shared_ptr<NekoGui::ProxyEntity>> sameCountryProxies;
+
+    for (const auto &profile: profiles) {
+        if (profile->bean->country == ent->bean->country && profile->id != ent->id) {
+            sameCountryProxies << profile;
+        }
+    }
+
+    MW_show_log(tr("Found %1 proxies in the same country (%2).").arg(sameCountryProxies.size()).arg(ent->bean->country));
+
+    if (!sameCountryProxies.isEmpty()) {
+        int randomIndex = QRandomGenerator::global()->bounded(sameCountryProxies.size());
+        // MW_show_log(tr("Random index chosen: %1").arg(randomIndex));
+        auto selectedProxy = sameCountryProxies[randomIndex];
+        // MW_show_log(tr("Starting random proxy with id=%1").arg(selectedProxy->id));
+        neko_start(selectedProxy->id);
+    } else {
+        MW_show_log(tr("No other proxies found in country: %1").arg(ent->bean->country));
+    }
 }

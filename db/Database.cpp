@@ -269,6 +269,10 @@ namespace NekoGui {
         profilesIdOrder.push_back(ent->id);
 
         ent->fn = QStringLiteral("profiles/%1.json").arg(ent->id);
+
+        // Set country from display
+        ent->bean->SetCountryFromDisplay();
+
         ent->Save();
         return true;
     }
