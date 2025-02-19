@@ -189,6 +189,7 @@
                     <property name="styleSheet">
                       <string>
                         color: red;
+                        font-size: 20px;
                       </string>
                     </property>
                   </widget>
@@ -434,6 +435,17 @@
               <widget class="QLabel" name="label_running">
                 <property name="text">
                   <string />
+                </property>
+                <property name="font">
+                  <font>
+                    <pointsize>16</pointsize>
+                  </font>
+                </property>
+                <property name="styleSheet">
+                  <string>
+                    color: red;
+                    font-size: 16px;
+                  </string>
                 </property>
               </widget>
             </item>

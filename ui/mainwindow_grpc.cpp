@@ -267,9 +267,7 @@ void MainWindow::speedtest_current() {
             if (!result.error().empty()) {
                 MW_show_log(QStringLiteral("UrlTest error: %1").arg(result.error().c_str()));
             }
-            if (latency <= 0) {
-                ui->label_running->setText(tr("Test Result") + ": " + tr("Unavailable"));
-            } else if (latency > 0) {
+            if (latency > 0) {
                 ui->label_running->setText(tr("Test Result") + ": " + QStringLiteral("%1 ms").arg(latency));
             }
         });
