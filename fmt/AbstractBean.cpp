@@ -14,12 +14,12 @@ namespace NekoGui_fmt {
         _add(new configItem("port", &serverPort, itemType::integer));
         _add(new configItem("c_cfg", &custom_config, itemType::string));
         _add(new configItem("c_out", &custom_outbound, itemType::string));
-        _add(new configItem("country", &country, itemType::string));
+        _add(new configItem("remark", &remark, itemType::string));
     }
 
     void AbstractBean::SetCountryFromDisplay() {
-        this->country = DisplayCountry();
-        this->name = this->country;
+        this->remark = this->name;
+        this->name = DisplayCountry();
     }
 
     QString AbstractBean::ToNekorayShareLink(const QString &type) {
@@ -255,6 +255,7 @@ namespace NekoGui_fmt {
             {QStringLiteral("波多黎各"), "PR"},
             {QStringLiteral("南极"), "AQ"},
             {QStringLiteral("格陵兰"), "GL"},
+            {QStringLiteral("留尼汪"), "RE"},
             {QStringLiteral("法属圭亚那"), "GF"}};
 
         // 遍历国家映射，判断代理名称中是否包含国家名称

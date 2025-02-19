@@ -34,7 +34,7 @@ namespace NekoGui {
         std::shared_ptr<NekoGui_traffic::TrafficData> traffic_data = std::make_shared<NekoGui_traffic::TrafficData>("");
 
         QString full_test_report;
-        QString country;
+        QString remark;
 
         ProxyEntity(NekoGui_fmt::AbstractBean *bean, const QString &type_);
 

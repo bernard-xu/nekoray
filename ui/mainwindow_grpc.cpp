@@ -567,8 +567,8 @@ void MainWindow::neko_random_start(int _id) {
         MW_show_log("No valid entity found.");
         return;
     }
-    if (ent->bean->country.isEmpty()) {
-        MW_show_log("Entity has no country specified.");
+    if (ent->bean->name.isEmpty()) {
+        MW_show_log("Entity has no remark specified.");
         return;
     }
 
@@ -577,12 +577,12 @@ void MainWindow::neko_random_start(int _id) {
     QList<std::shared_ptr<NekoGui::ProxyEntity>> sameCountryProxies;
 
     for (const auto &profile: profiles) {
-        if (profile->bean->country == ent->bean->country && profile->id != ent->id) {
+        if (profile->bean->name == ent->bean->name) {
             sameCountryProxies << profile;
         }
     }
 
-    MW_show_log(tr("Found %1 proxies in the same country (%2).").arg(sameCountryProxies.size()).arg(ent->bean->country));
+    MW_show_log(tr("Found %1 proxies in the same name (%2).").arg(sameCountryProxies.size()).arg(ent->bean->name));
 
     if (!sameCountryProxies.isEmpty()) {
         int randomIndex = QRandomGenerator::global()->bounded(sameCountryProxies.size());
@@ -591,6 +591,6 @@ void MainWindow::neko_random_start(int _id) {
         // MW_show_log(tr("Starting random proxy with id=%1").arg(selectedProxy->id));
         neko_start(selectedProxy->id);
     } else {
-        MW_show_log(tr("No other proxies found in country: %1").arg(ent->bean->country));
+        MW_show_log(tr("No other proxies found in country: %1").arg(ent->bean->name));
     }
 }

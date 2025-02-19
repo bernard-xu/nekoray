@@ -29,7 +29,7 @@ namespace NekoGui_fmt {
         int version;
 
         QString name = "";
-        QString country = "";
+        QString remark = "";
         QString serverAddress = "127.0.0.1";
         int serverPort = 1080;
 
