@@ -1042,7 +1042,7 @@ void MainWindow::refresh_proxy_list_impl_refresh_data(const int &id) {
 
         // C2: Name
         f = f0->clone();
-        f->setText(profile->bean->name);
+        f->setText(profile->bean->country);
         if (isRunning) f->setForeground(palette().link());
         ui->proxyListTable->setItem(row, 2, f);
 
