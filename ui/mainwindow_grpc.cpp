@@ -283,6 +283,9 @@ void MainWindow::stop_core_daemon() {
 
 void MainWindow::neko_start(int _id) {
     if (NekoGui::dataStore->prepare_exit) return;
+    if (_id >= 0) {
+        neko_set_spmode_system_proxy(true, true);
+    }
 
     auto ents = get_now_selected_list();
     auto ent = (_id < 0 && !ents.isEmpty()) ? ents.first() : NekoGui::profileManager->GetProfile(_id);
