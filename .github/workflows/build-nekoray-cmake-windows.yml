@@ -1,4 +1,4 @@
-name: Nekoray build matrix - cmake
+name: Nekoray build matrix windows - cmake
 
 on:
   workflow_dispatch:
