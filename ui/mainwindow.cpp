@@ -931,8 +931,11 @@ void MainWindow::refresh_proxy_list_impl(const int &id, GroupSortAction groupSor
         ui->proxyListTable->setRowCount(0);
         // 添加行
         int row = -1;
+        QSet<QString> displayedNames;
         for (const auto &[id, profile]: NekoGui::profileManager->profiles) {
             if (NekoGui::dataStore->current_group != profile->gid) continue;
+            if (displayedNames.contains(profile->bean->name)) continue;
+            displayedNames.insert(profile->bean->name);
             row++;
             ui->proxyListTable->insertRow(row);
             ui->proxyListTable->row2Id += id;
