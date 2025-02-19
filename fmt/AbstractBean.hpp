@@ -29,6 +29,7 @@ namespace NekoGui_fmt {
         int version;
 
         QString name = "";
+        QString country = "";
         QString serverAddress = "127.0.0.1";
         int serverPort = 1080;
 
@@ -55,6 +56,8 @@ namespace NekoGui_fmt {
 
         virtual QString DisplayTypeAndName();
 
+        virtual QString DisplayCountry();
+
         //
 
         virtual int NeedExternal(bool isFirstProfile) { return 0; };
@@ -64,6 +67,8 @@ namespace NekoGui_fmt {
         virtual ExternalBuildResult BuildExternal(int mapping_port, int socks_port, int external_stat) { return {}; };
 
         virtual QString ToShareLink() { return {}; };
+
+        void SetCountryFromDisplay();
     };
 
 } // namespace NekoGui_fmt
