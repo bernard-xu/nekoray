@@ -86,7 +86,7 @@ func (s *server) Stop(ctx context.Context, in *gen.EmptyReq) (out *gen.ErrorResp
 
 func (s *server) Test(ctx context.Context, in *gen.TestReq) (out *gen.TestResp, _ error) {
 	// var err error
-	out = &gen.TestResp{Ms: 0}
+	out = &gen.TestResp{Ms: 60}
 
 	// defer func() {
 	// 	if err != nil {
