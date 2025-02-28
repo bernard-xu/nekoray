@@ -383,16 +383,17 @@ namespace NekoGui {
     }
 
     QList<std::shared_ptr<ProxyEntity>> Group::ProfilesWithOrder() const {
-        if (order.isEmpty()) {
-            return Profiles();
-        } else {
-            QList<std::shared_ptr<ProxyEntity>> ret;
-            for (auto _id: order) {
-                auto ent = profileManager->GetProfile(_id);
-                if (ent != nullptr) ret += ent;
-            }
-            return ret;
-        }
+        return Profiles();
+        // if (order.isEmpty()) {
+        //     return Profiles();
+        // } else {
+        //     QList<std::shared_ptr<ProxyEntity>> ret;
+        //     for (auto _id: order) {
+        //         auto ent = profileManager->GetProfile(_id);
+        //         if (ent != nullptr) ret += ent;
+        //     }
+        //     return ret;
+        // }
     }
 
 } // namespace NekoGui
