@@ -256,7 +256,14 @@ namespace NekoGui_fmt {
             {QStringLiteral("南极"), "AQ"},
             {QStringLiteral("格陵兰"), "GL"},
             {QStringLiteral("留尼汪"), "RE"},
-            {QStringLiteral("法属圭亚那"), "GF"}};
+            {QStringLiteral("法属圭亚那"), "GF"},
+            {QStringLiteral("法属波利尼西亚"), "PF"},
+            {QStringLiteral("法属圣马丁"), "MF"},
+            {QStringLiteral("圣皮埃尔和密克隆群岛"), "PM"},
+            {QStringLiteral("印尼"), "ID"}, 
+            {QStringLiteral("🇭🇰"), "HK"},
+            {QStringLiteral("🇸🇬"), "SG"},
+        };
 
         // 遍历国家映射，判断代理名称中是否包含国家名称
         QString bestMatch;
