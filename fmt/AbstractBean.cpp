@@ -259,12 +259,17 @@ namespace NekoGui_fmt {
             {QStringLiteral("法属圭亚那"), "GF"}};
 
         // 遍历国家映射，判断代理名称中是否包含国家名称
+        QString bestMatch;
+        int maxLength = 0;
         for (auto it = countryMap.begin(); it != countryMap.end(); ++it) {
             if (name.contains(it.key())) {
-                return it.key() + " (" + it.value() + ")";
+                if (it.key().length() > maxLength) {
+                    maxLength = it.key().length();
+                    bestMatch = it.key() + " (" + it.value() + ")";
+                }
             }
         }
-        return QStringLiteral("未知");
+        return bestMatch.isEmpty() ? QStringLiteral("未知") : bestMatch;
     }
 
     void AbstractBean::ResolveDomainToIP(const std::function<void()> &onFinished) {
