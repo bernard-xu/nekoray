@@ -103,6 +103,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // connect(ui->toolButton_document, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://matsuridayo.github.io/")); });
     // connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://neko-box.pages.dev/喵")); });
     connect(ui->toolButton_update, &QToolButton::clicked, this, [=] { runOnNewThread([=] { CheckUpdate(); }); });
+    // 连接更新订阅按钮的点击事件
+    connect(ui->toolButton_update_subscription, &QToolButton::clicked, this, [=] { on_menu_update_subscription_triggered(); });
     // connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
 
     // Setup log UI
