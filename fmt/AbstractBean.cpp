@@ -256,20 +256,28 @@ namespace NekoGui_fmt {
             {QStringLiteral("南极"), "AQ"},
             {QStringLiteral("格陵兰"), "GL"},
             {QStringLiteral("留尼汪"), "RE"},
-            {QStringLiteral("法属圭亚那"), "GF"}};
+            {QStringLiteral("法属圭亚那"), "GF"},
+            {QStringLiteral("法属波利尼西亚"), "PF"},
+            {QStringLiteral("法属圣马丁"), "MF"},
+            {QStringLiteral("圣皮埃尔和密克隆群岛"), "PM"},
+            {QStringLiteral("印尼"), "ID"}, 
+            {QStringLiteral("🇭🇰"), "HK"},
+            {QStringLiteral("🇸🇬"), "SG"},
+        };
 
         // 遍历国家映射，判断代理名称中是否包含国家名称
-        QString bestMatch;
-        int maxLength = 0;
+        // 先检查特殊情况：印度尼西亚和印度
+        if (name.contains(QStringLiteral("印度尼西亚")) || name.contains(QStringLiteral("印尼"))) {
+            return QStringLiteral("印度尼西亚") + " (ID)";
+        }
+        
         for (auto it = countryMap.begin(); it != countryMap.end(); ++it) {
             if (name.contains(it.key())) {
-                if (it.key().length() > maxLength) {
-                    maxLength = it.key().length();
-                    bestMatch = it.key() + " (" + it.value() + ")";
-                }
+                return it.key() + " (" + it.value() + ")";
             }
         }
-        return bestMatch.isEmpty() ? QStringLiteral("未知") : bestMatch;
+        return QStringLiteral("未知");
+    }
     }
 
     void AbstractBean::ResolveDomainToIP(const std::function<void()> &onFinished) {
