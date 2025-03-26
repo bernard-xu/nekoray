@@ -104,7 +104,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://neko-box.pages.dev/喵")); });
     connect(ui->toolButton_update, &QToolButton::clicked, this, [=] { runOnNewThread([=] { CheckUpdate(); }); });
     // 连接更新订阅按钮的点击事件
-    connect(ui->toolButton_update_subscription, &QToolButton::clicked, this, [=] { on_menu_update_subscription_triggered(); });
+        // 连接更新订阅按钮的点击事件
+        connect(ui->toolButton_update_subscription, &QToolButton::clicked, this, [=] { 
+            // 在更新订阅前清除当前组的服务器
+            auto group = NekoGui::profileManager->CurrentGroup();
+            if (group->url.isEmpty()) return;
+            
+            if (QMessageBox::question(this, tr("更新订阅"), 
+                                     tr("是否在更新订阅前清除现有服务器？"), 
+                                     QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+                // 清除当前组的所有服务器
+                for (const auto &profile : group->Profiles()) {
+                    NekoGui::profileManager->DeleteProfile(profile->id);
+                }
+                // 刷新列表显示
+                refresh_proxy_list();
+                // 然后更新订阅
+                on_menu_update_subscription_triggered();
+            } else {
+                // 不清除，直接更新订阅
+                on_menu_update_subscription_triggered();
+            }
+        });
     // connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
 
     // Setup log UI
