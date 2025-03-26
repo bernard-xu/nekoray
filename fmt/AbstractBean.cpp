@@ -277,8 +277,7 @@ namespace NekoGui_fmt {
             }
         }
         return QStringLiteral("未知");
-    }
-    }
+    } // Removed the extra closing brace that was here
 
     void AbstractBean::ResolveDomainToIP(const std::function<void()> &onFinished) {
         bool noResolve = false;
