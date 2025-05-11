@@ -1180,7 +1180,12 @@ void MainWindow::on_menu_reset_traffic_triggered() {
 void MainWindow::on_menu_profile_debug_info_triggered() {
     auto ents = get_now_selected_list();
     if (ents.count() != 1) return;
-    auto btn = QMessageBox::information(this, software_name, ents.first()->ToJsonBytes(), "OK", "Edit", "Reload", 0, 0);
+    QMessageBox msgBox(QMessageBox::Information, software_name, ents.first()->ToJsonBytes());
+    msgBox.addButton("OK", QMessageBox::AcceptRole);
+    msgBox.addButton("Edit", QMessageBox::ActionRole);
+    msgBox.addButton("Reload", QMessageBox::ActionRole);
+    auto btn = msgBox.exec();
+    // Convert to old button index format (0=first button, 1=second button, etc.)
     if (btn == 1) {
         QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(QStringLiteral("profiles/%1.json").arg(ents.first()->id)).absoluteFilePath()));
     } else if (btn == 2) {

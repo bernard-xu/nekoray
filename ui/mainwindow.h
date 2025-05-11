@@ -162,6 +162,7 @@ private:
     QMutex mu_exit;
     QSemaphore sem_stopped;
     int exit_reason = 0;
+    bool mw_sub_updating = false;
 
     QList<std::shared_ptr<NekoGui::ProxyEntity>> get_now_selected_list();
 
