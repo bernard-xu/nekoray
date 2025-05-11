@@ -1365,6 +1365,30 @@ End: %2</source>
         <translation>更新订阅</translation>
     </message>
     <message>
+        <source>Clear and update subscription</source>
+        <translation>清空并更新订阅</translation>
+    </message>
+    <message>
+        <source>No subscription URL for group: %1</source>
+        <translation>分组 %1 没有订阅URL</translation>
+    </message>
+    <message>
+        <source>Clear all profiles in group: %1?</source>
+        <translation>清空分组 %1 中的所有配置?</translation>
+    </message>
+    <message>
+        <source>Cleared all profiles in group: %1</source>
+        <translation>已清空分组 %1 中的所有配置</translation>
+    </message>
+    <message>
+        <source>Clear all profiles and update subscription for group: %1?</source>
+        <translation>清空所有配置并更新分组 %1 的订阅?</translation>
+    </message>
+    <message>
+        <source>Clearing all profiles in group: %1</source>
+        <translation>正在清空分组 %1 中的所有配置</translation>
+    </message>
+    <message>
         <source>Clone %1 item(s)</source>
         <translation>克隆 %1 个项目</translation>
     </message>

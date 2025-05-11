@@ -103,8 +103,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // connect(ui->toolButton_document, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://matsuridayo.github.io/")); });
     // connect(ui->toolButton_ads, &QToolButton::clicked, this, [=] { QDesktopServices::openUrl(QUrl("https://neko-box.pages.dev/喵")); });
     connect(ui->toolButton_update, &QToolButton::clicked, this, [=] { runOnNewThread([=] { CheckUpdate(); }); });
-    // 连接更新订阅按钮的点击事件
-    connect(ui->toolButton_update_subscription, &QToolButton::clicked, this, [=] { on_menu_update_subscription_triggered(); });
+    
+    // 创建更新订阅菜单
+    auto menu_update_subscription = new QMenu(this);
+    auto action_normal_update = new QAction(tr("Update subscription"), this);
+    auto action_clear_and_update = new QAction(tr("Clear and update subscription"), this);
+    
+    connect(action_normal_update, &QAction::triggered, this, [=] { on_menu_update_subscription_triggered(false); });
+    connect(action_clear_and_update, &QAction::triggered, this, [=] { on_menu_update_subscription_triggered(true); });
+    
+    menu_update_subscription->addAction(action_normal_update);
+    menu_update_subscription->addAction(action_clear_and_update);
+    
+    // 设置更新订阅按钮的菜单
+    ui->toolButton_update_subscription->setMenu(menu_update_subscription);
+    ui->toolButton_update_subscription->setPopupMode(QToolButton::InstantPopup);
+    
+    // 连接更新订阅按钮的点击事件，默认是普通更新
+    connect(ui->toolButton_update_subscription, &QToolButton::clicked, this, [=] { on_menu_update_subscription_triggered(false); });
+    
     // connect(ui->toolButton_url_test, &QToolButton::clicked, this, [=] { speedtest_current_group(1, true); });
 
     // Setup log UI
@@ -1379,12 +1396,56 @@ void MainWindow::on_menu_delete_repeat_triggered() {
 
 bool mw_sub_updating = false;
 
-void MainWindow::on_menu_update_subscription_triggered() {
+void MainWindow::on_menu_update_subscription_triggered(bool clearBeforeUpdate) {
     auto group = NekoGui::profileManager->CurrentGroup();
-    if (group->url.isEmpty()) return;
     if (mw_sub_updating) return;
     mw_sub_updating = true;
-    NekoGui_sub::groupUpdater->AsyncUpdate(group->url, group->id, [&] { mw_sub_updating = false; });
+    
+    if (group->url.isEmpty()) {
+        // 如果订阅URL为空，则清空当前分组的订阅并提示
+        show_log_impl(tr("No subscription URL for group: %1").arg(group->name));
+        
+        // 删除当前分组中的所有配置文件
+        if (clearBeforeUpdate) {
+            if (QMessageBox::question(this, tr("Confirmation"), 
+                tr("Clear all profiles in group: %1?").arg(group->name)) == QMessageBox::StandardButton::Yes) {
+                
+                for (const auto &profile : group->Profiles()) {
+                    NekoGui::profileManager->DeleteProfile(profile->id);
+                }
+                show_log_impl(tr("Cleared all profiles in group: %1").arg(group->name));
+                refresh_proxy_list();
+            }
+        }
+        
+        mw_sub_updating = false;
+        return;
+    }
+    
+    if (clearBeforeUpdate) {
+        // 清空当前分组的所有配置文件，然后更新订阅
+        if (QMessageBox::question(this, tr("Confirmation"), 
+            tr("Clear all profiles and update subscription for group: %1?").arg(group->name)) == QMessageBox::StandardButton::Yes) {
+            
+            show_log_impl(tr("Clearing all profiles in group: %1").arg(group->name));
+            
+            // 手动设置清空标志，这样GroupUpdater会清空组内所有配置
+            auto originalSubClear = NekoGui::dataStore->sub_clear;
+            NekoGui::dataStore->sub_clear = true;
+            
+            // 更新订阅
+            NekoGui_sub::groupUpdater->AsyncUpdate(group->url, group->id, [&, originalSubClear] { 
+                // 恢复原始设置
+                NekoGui::dataStore->sub_clear = originalSubClear; 
+                mw_sub_updating = false; 
+            });
+        } else {
+            mw_sub_updating = false;
+        }
+    } else {
+        // 普通更新订阅
+        NekoGui_sub::groupUpdater->AsyncUpdate(group->url, group->id, [&] { mw_sub_updating = false; });
+    }
 }
 
 void MainWindow::on_menu_remove_unavailable_triggered() {
