@@ -1653,6 +1653,10 @@ Release note:
         <source>The last speed test did not exit completely, please wait. If it persists, please restart the program.</source>
         <translation>上次速度测试未完全退出，请等待。如果问题仍然存在，请重新启动程序。</translation>
     </message>
+    <message>
+        <source>Updating subscription and clearing existing nodes: %1</source>
+        <translation>正在更新订阅并清除现有节点: %1</translation>
+    </message>
 </context>
 <context>
     <name>Qv2ray::ui::widgets::AutoCompleteTextEdit</name>
