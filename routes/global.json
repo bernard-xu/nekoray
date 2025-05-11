@@ -1,0 +1,21 @@
+{
+    "direct_ip": "",
+    "direct_domain": "",
+    "proxy_ip": "",
+    "proxy_domain": "",
+    "block_ip": "",
+    "block_domain": "",
+    "def_outbound": "proxy",
+    "custom": "{\"rules\": []}",
+    "remote_dns": "https://dns.google/dns-query",
+    "remote_dns_strategy": "",
+    "direct_dns": "https://doh.pub/dns-query",
+    "direct_dns_strategy": "",
+    "dns_routing": true,
+    "use_dns_object": false,
+    "dns_object": "",
+    "dns_final_out": "proxy",
+    "domain_strategy": "AsIs",
+    "outbound_domain_strategy": "AsIs",
+    "sniffing_mode": 0
+} 
