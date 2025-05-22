@@ -1,0 +1,10 @@
+{
+    "custom": "{\"rules\": []}",
+    "def_outbound": "proxy",
+    "direct_dns": "https://doh.pub/dns-query",
+    "dns_final_out": "proxy",
+    "dns_routing": true,
+    "remote_dns": "https://dns.google/dns-query",
+    "sniffing_mode": 1,
+    "use_dns_object": false
+}

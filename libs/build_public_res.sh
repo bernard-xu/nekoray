@@ -14,3 +14,7 @@ curl -fLso $DEST/geosite.db "https://github.com/SagerNet/sing-geosite/releases/l
 
 #### copy res/public ####
 cp res/public/* $DEST
+
+#### copy config folder ####
+mkdir -p $DEST/config
+cp -r config/* $DEST/config/
