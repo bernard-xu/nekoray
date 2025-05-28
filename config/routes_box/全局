@@ -1,10 +1,10 @@
 {
-    "block_domain": "geosite:category-ads-all\ndomain:appcenter.ms\ndomain:firebase.io\ndomain:crashlytics.com\n",
+    "block_domain": "",
     "custom": "{\"rules\": []}",
     "def_outbound": "proxy",
     "direct_dns": "https://doh.pub/dns-query",
-    "direct_domain": "geosite:cn\nfeishu.cn\nhttps://admin.gamsgo2.com/",
-    "direct_ip": "geoip:cn\ngeoip:private\n",
+    "direct_domain": "",
+    "direct_ip": "geoip:private\n",
     "dns_final_out": "proxy",
     "dns_routing": true,
     "remote_dns": "https://dns.google/dns-query",
