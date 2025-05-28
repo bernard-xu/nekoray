@@ -72,7 +72,7 @@ namespace NekoGui_fmt {
             {QStringLiteral("东帝汶"), "TL"},
             {QStringLiteral("尼泊尔"), "NP"},
             {QStringLiteral("不丹"), "BT"},
-            {QStringLiteral("孟加拉国"), "BD"},
+            {QStringLiteral("孟加拉"), "BD"},
             {QStringLiteral("印度"), "IN"},
             {QStringLiteral("巴基斯坦"), "PK"},
             {QStringLiteral("斯里兰卡"), "LK"},

@@ -1,7 +1,10 @@
 {
+    "block_domain": "",
     "custom": "{\"rules\": []}",
     "def_outbound": "proxy",
     "direct_dns": "https://doh.pub/dns-query",
+    "direct_domain": "",
+    "direct_ip": "geoip:private\n",
     "dns_final_out": "proxy",
     "dns_routing": true,
     "remote_dns": "https://dns.google/dns-query",

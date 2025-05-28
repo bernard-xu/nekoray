@@ -79,6 +79,7 @@ namespace NekoGui {
         if (groups.empty()) {
             auto defaultGroup = NekoGui::ProfileManager::NewGroup();
             defaultGroup->name = QObject::tr("Default");
+            defaultGroup->url = "http://192.168.8.253:8080/api/merged?format=base64";
             NekoGui::profileManager->AddGroup(defaultGroup);
         }
         //
