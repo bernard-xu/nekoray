@@ -109,10 +109,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     auto action_normal_update = new QAction(tr("Update subscription"), this);
     auto action_clear_and_update = new QAction(tr("Clear and update subscription"), this);
     
-    connect(action_normal_update, &QAction::triggered, this, [=] { on_menu_update_subscription_triggered(false); });
+    t(action_normal_update, &QAction::triggered, this, [=] { on_menu_update_subscription_triggered(false); });
     connect(action_clear_and_update, &QAction::triggered, this, [=] { on_menu_update_subscription_triggered(true); });
     
-    menu_update_subscription->addAction(action_normal_update);
+    
     menu_update_subscription->addAction(action_clear_and_update);
     
     // 设置更新订阅按钮的菜单
