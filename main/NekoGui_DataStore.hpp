@@ -74,6 +74,7 @@ namespace NekoGui {
         bool need_keep_vpn_off = false;
         QString appdataDir = "";
         QStringList ignoreConnTag = {};
+        QMap<QString, int> countryNodeCount; // 存储每个国家的节点数量
 
         std::unique_ptr<Routing> routing;
         int imported_count = 0;

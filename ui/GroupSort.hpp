@@ -9,6 +9,7 @@ namespace GroupSortMethod {
         ByName,
         ByLatency,
         ById,
+        ByCountry,
     };
 }
 

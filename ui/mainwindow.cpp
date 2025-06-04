@@ -186,6 +186,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             action.method = GroupSortMethod::ByAddress;
         } else if (logicalIndex == 2) {
             action.method = GroupSortMethod::ByName;
+            // 按名称排序时，默认按国家排序
+            action.method = GroupSortMethod::ByCountry;
         } else if (logicalIndex == 3) {
             action.method = GroupSortMethod::ByLatency;
         } else {
@@ -494,6 +496,9 @@ void MainWindow::show_group(int gid) {
         NekoGui::dataStore->Save();
     }
     ui->tabWidget->widget(groupId2TabIndex(gid))->layout()->addWidget(ui->proxyListTable);
+    
+    // 清除国家节点计数
+    NekoGui::dataStore->countryNodeCount.clear();
 
     // 列宽是否可调
     if (group->manually_column_width) {
@@ -948,17 +953,41 @@ void MainWindow::refresh_proxy_list_impl(const int &id, GroupSortAction groupSor
         // 清空数据
         ui->proxyListTable->row2Id.clear();
         ui->proxyListTable->setRowCount(0);
+        
+        // 统计每个国家的节点数量
+        QMap<QString, int> countryCount;
+        for (const auto &[id, profile]: NekoGui::profileManager->profiles) {
+            if (NekoGui::dataStore->current_group != profile->gid) continue;
+            QString country = profile->bean->DisplayCountry();
+            countryCount[country]++;
+        }
+        
         // 添加行
         int row = -1;
         QSet<QString> displayedNames;
         for (const auto &[id, profile]: NekoGui::profileManager->profiles) {
             if (NekoGui::dataStore->current_group != profile->gid) continue;
-            if (displayedNames.contains(profile->bean->name)) continue;
-            displayedNames.insert(profile->bean->name);
-            row++;
-            ui->proxyListTable->insertRow(row);
-            ui->proxyListTable->row2Id += id;
+            
+            // 如果按国家排序，则修改节点名称以显示国家和节点数量
+            if (groupSortAction.method == GroupSortMethod::ByCountry) {
+                QString country = profile->bean->DisplayCountry();
+                if (!displayedNames.contains(country)) {
+                    displayedNames.insert(country);
+                    row++;
+                    ui->proxyListTable->insertRow(row);
+                    ui->proxyListTable->row2Id += id;
+                }
+            } else {
+                if (displayedNames.contains(profile->bean->name)) continue;
+                displayedNames.insert(profile->bean->name);
+                row++;
+                ui->proxyListTable->insertRow(row);
+                ui->proxyListTable->row2Id += id;
+            }
         }
+        
+        // 保存国家节点数量信息到全局变量，以便在显示时使用
+        NekoGui::dataStore->countryNodeCount = countryCount;
     }
 
     // 显示排序
@@ -979,6 +1008,7 @@ void MainWindow::refresh_proxy_list_impl(const int &id, GroupSortAction groupSor
             case GroupSortMethod::ByAddress:
             case GroupSortMethod::ByName:
             case GroupSortMethod::ByLatency:
+            case GroupSortMethod::ByCountry:
             case GroupSortMethod::ByType: {
                 std::sort(ui->proxyListTable->order.begin(), ui->proxyListTable->order.end(),
                           [=](int a, int b) {
@@ -996,6 +1026,9 @@ void MainWindow::refresh_proxy_list_impl(const int &id, GroupSortAction groupSor
                               } else if (groupSortAction.method == GroupSortMethod::ByLatency) {
                                   ms_a = NekoGui::profileManager->GetProfile(a)->full_test_report;
                                   ms_b = NekoGui::profileManager->GetProfile(b)->full_test_report;
+                              } else if (groupSortAction.method == GroupSortMethod::ByCountry) {
+                                  ms_a = NekoGui::profileManager->GetProfile(a)->bean->DisplayCountry();
+                                  ms_b = NekoGui::profileManager->GetProfile(b)->bean->DisplayCountry();
                               }
                               auto get_latency_for_sort = [](int id) {
                                   auto i = NekoGui::profileManager->GetProfile(id)->latency;
@@ -1064,7 +1097,21 @@ void MainWindow::refresh_proxy_list_impl_refresh_data(const int &id) {
 
         // C2: Name
         f = f0->clone();
-        f->setText(profile->bean->name);
+        // 获取国家和节点数量
+        QString country = profile->bean->DisplayCountry();
+        int count = NekoGui::dataStore->countryNodeCount.value(country, 0);
+        
+        // 如果是按国家排序，则显示国家名称和节点数量
+        if (!NekoGui::dataStore->countryNodeCount.isEmpty()) {
+            if (profile->bean->name == country || profile->bean->name.isEmpty()) {
+                f->setText(country + QString(" (%1)").arg(count));
+            } else {
+                f->setText(profile->bean->name);
+            }
+        } else {
+            f->setText(profile->bean->name);
+        }
+        
         if (isRunning) f->setForeground(palette().link());
         ui->proxyListTable->setItem(row, 2, f);
 
