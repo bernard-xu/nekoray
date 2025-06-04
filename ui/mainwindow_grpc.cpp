@@ -602,7 +602,7 @@ void MainWindow::neko_random_start(int _id) {
     QList<std::shared_ptr<NekoGui::ProxyEntity>> sameCountryProxies;
 
     for (const auto &profile: profiles) {
-        if (profile->bean->name == ent->bean->name && profile->latency >= 0) {
+        if (profile->bean->name == ent->bean->name) {
             sameCountryProxies << profile;
         }
     }
@@ -614,31 +614,8 @@ void MainWindow::neko_random_start(int _id) {
         auto selectedProxy = sameCountryProxies[randomIndex];
         MW_show_log(tr("Starting random proxy with id=%1, name=%2").arg(selectedProxy->id).arg(selectedProxy->bean->DisplayTypeAndName()));
         
-        if (selectedProxy->id >= 0) {
-            neko_set_spmode_system_proxy(true, true);
-        }
-
-        auto restartMsgbox = new QMessageBox(QMessageBox::Question, software_name, tr("If there is no response for a long time, it is recommended to restart the software."),
-                                         QMessageBox::Yes | QMessageBox::No, this);
-        connect(restartMsgbox, &QMessageBox::accepted, this, [=] { MW_dialog_message("", "RestartProgram"); });
-        auto restartMsgboxTimer = new MessageBoxTimer(this, restartMsgbox, 5000);
-
-        runOnNewThread([=] {
-            if (NekoGui::dataStore->started_id >= 0) {
-                runOnUiThread([=] { neko_stop(false, true); });
-                sem_stopped.acquire();
-            }
-            
-            MW_show_log(">>>>>>>> " + tr("Starting random profile %1").arg(selectedProxy->bean->DisplayTypeAndName()));
-            neko_start(selectedProxy->id);
-            mu_starting.unlock();
-            
-            runOnUiThread([=] {
-                restartMsgboxTimer->cancel();
-                restartMsgboxTimer->deleteLater();
-                restartMsgbox->deleteLater();
-            });
-        });
+        mu_starting.unlock();
+        neko_start(selectedProxy->id);
     } else {
         MW_show_log(tr("No suitable proxies found with name: %1").arg(ent->bean->name));
         mu_starting.unlock();
