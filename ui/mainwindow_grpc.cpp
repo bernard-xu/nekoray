@@ -562,23 +562,47 @@ void MainWindow::neko_random_start(int _id) {
         return;
     }
 
+    if (!mu_starting.tryLock()) {
+        MessageBoxWarning(software_name, "Another profile is starting...");
+        return;
+    }
+    if (!mu_stopping.tryLock()) {
+        MessageBoxWarning(software_name, "Another profile is stopping...");
+        mu_starting.unlock();
+        return;
+    }
+    mu_stopping.unlock();
+
     auto ents = get_now_selected_list();
     auto ent = (_id < 0 && !ents.isEmpty()) ? ents.first() : NekoGui::profileManager->GetProfile(_id);
     if (!ent) {
         MW_show_log("No valid entity found.");
+        mu_starting.unlock();
         return;
     }
     if (ent->bean->name.isEmpty()) {
         MW_show_log("Entity has no remark specified.");
+        mu_starting.unlock();
         return;
     }
 
+    if (!NekoGui::dataStore->core_running) {
+        runOnUiThread(
+            [=] {
+                MW_show_log("Try to start the config, but the core has not listened to the grpc port, so restart it...");
+                core_process->start_profile_when_core_is_up = ent->id;
+                core_process->Restart();
+            },
+            DS_cores);
+        mu_starting.unlock();
+        return; // let CoreProcess call neko_start when core is up
+    }
+
     auto profiles = NekoGui::profileManager->CurrentGroup()->ProfilesWithOrder();
-    // MW_show_log(tr("Current group has %1 profiles.").arg(profiles.size()));
     QList<std::shared_ptr<NekoGui::ProxyEntity>> sameCountryProxies;
 
     for (const auto &profile: profiles) {
-        if (profile->bean->name == ent->bean->name) {
+        if (profile->bean->name == ent->bean->name && profile->latency >= 0) {
             sameCountryProxies << profile;
         }
     }
@@ -587,11 +611,36 @@ void MainWindow::neko_random_start(int _id) {
 
     if (!sameCountryProxies.isEmpty()) {
         int randomIndex = QRandomGenerator::global()->bounded(sameCountryProxies.size());
-        // MW_show_log(tr("Random index chosen: %1").arg(randomIndex));
         auto selectedProxy = sameCountryProxies[randomIndex];
-        // MW_show_log(tr("Starting random proxy with id=%1").arg(selectedProxy->id));
-        neko_start(selectedProxy->id);
+        MW_show_log(tr("Starting random proxy with id=%1, name=%2").arg(selectedProxy->id).arg(selectedProxy->bean->DisplayTypeAndName()));
+        
+        if (selectedProxy->id >= 0) {
+            neko_set_spmode_system_proxy(true, true);
+        }
+
+        auto restartMsgbox = new QMessageBox(QMessageBox::Question, software_name, tr("If there is no response for a long time, it is recommended to restart the software."),
+                                         QMessageBox::Yes | QMessageBox::No, this);
+        connect(restartMsgbox, &QMessageBox::accepted, this, [=] { MW_dialog_message("", "RestartProgram"); });
+        auto restartMsgboxTimer = new MessageBoxTimer(this, restartMsgbox, 5000);
+
+        runOnNewThread([=] {
+            if (NekoGui::dataStore->started_id >= 0) {
+                runOnUiThread([=] { neko_stop(false, true); });
+                sem_stopped.acquire();
+            }
+            
+            MW_show_log(">>>>>>>> " + tr("Starting random profile %1").arg(selectedProxy->bean->DisplayTypeAndName()));
+            neko_start(selectedProxy->id);
+            mu_starting.unlock();
+            
+            runOnUiThread([=] {
+                restartMsgboxTimer->cancel();
+                restartMsgboxTimer->deleteLater();
+                restartMsgbox->deleteLater();
+            });
+        });
     } else {
-        MW_show_log(tr("No other proxies found in country: %1").arg(ent->bean->name));
+        MW_show_log(tr("No suitable proxies found with name: %1").arg(ent->bean->name));
+        mu_starting.unlock();
     }
 }
