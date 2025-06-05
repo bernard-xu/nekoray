@@ -141,7 +141,7 @@ namespace NekoGui {
 
         // Routing
         QString custom_route_global = "{\"rules\": []}";
-        QString active_routing = "Default";
+        QString active_routing = "大陆白名单";
 
         // VPN
         bool fake_dns = false;

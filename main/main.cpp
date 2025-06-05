@@ -196,9 +196,9 @@ int main(int argc, char* argv[]) {
     NekoGui::dataStore->routing = std::make_unique<NekoGui::Routing>();
     NekoGui::dataStore->routing->fn = ROUTES_PREFIX + NekoGui::dataStore->active_routing;
     isLoaded = NekoGui::dataStore->routing->Load();
-    if (!isLoaded) {
-        NekoGui::dataStore->routing->Save();
-    }
+    // if (!isLoaded) {
+    //     NekoGui::dataStore->routing->Save();
+    // }
 
     // Translate
     QString locale;
