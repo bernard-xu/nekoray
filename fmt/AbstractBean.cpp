@@ -52,6 +52,216 @@ namespace NekoGui_fmt {
         if (name.isEmpty())
             return QStringLiteral("未知");
 
+        // 定义国家代码到中文名称的映射
+        QMap<QString, QString> codeToChineseName = {
+            {"CN", "中国"},
+            {"JP", "日本"},
+            {"KR", "韩国"},
+            {"KP", "朝鲜"},
+            {"MN", "蒙古"},
+            {"VN", "越南"},
+            {"LA", "老挝"},
+            {"KH", "柬埔寨"},
+            {"MM", "缅甸"},
+            {"TH", "泰国"},
+            {"MY", "马来西亚"},
+            {"SG", "新加坡"},
+            {"ID", "印度尼西亚"},
+            {"PH", "菲律宾"},
+            {"BN", "文莱"},
+            {"TL", "东帝汶"},
+            {"NP", "尼泊尔"},
+            {"BT", "不丹"},
+            {"BD", "孟加拉"},
+            {"IN", "印度"},
+            {"PK", "巴基斯坦"},
+            {"LK", "斯里兰卡"},
+            {"MV", "马尔代夫"},
+            {"KZ", "哈萨克斯坦"},
+            {"KG", "吉尔吉斯斯坦"},
+            {"TJ", "塔吉克斯坦"},
+            {"UZ", "乌兹别克斯坦"},
+            {"TM", "土库曼斯坦"},
+            {"AF", "阿富汗"},
+            {"IQ", "伊拉克"},
+            {"IR", "伊朗"},
+            {"SY", "叙利亚"},
+            {"JO", "约旦"},
+            {"LB", "黎巴嫩"},
+            {"IL", "以色列"},
+            {"PS", "巴勒斯坦"},
+            {"SA", "沙特阿拉伯"},
+            {"BH", "巴林"},
+            {"QA", "卡塔尔"},
+            {"KW", "科威特"},
+            {"AE", "阿联酋"},
+            {"OM", "阿曼"},
+            {"YE", "也门"},
+            {"GE", "格鲁吉亚"},
+            {"AM", "亚美尼亚"},
+            {"AZ", "阿塞拜疆"},
+            {"TR", "土耳其"},
+            {"CY", "塞浦路斯"},
+            {"FI", "芬兰"},
+            {"SE", "瑞典"},
+            {"NO", "挪威"},
+            {"IS", "冰岛"},
+            {"DK", "丹麦"},
+            {"EE", "爱沙尼亚"},
+            {"LV", "拉脱维亚"},
+            {"LT", "立陶宛"},
+            {"BY", "白俄罗斯"},
+            {"RU", "俄罗斯"},
+            {"UA", "乌克兰"},
+            {"PL", "波兰"},
+            {"CZ", "捷克"},
+            {"SK", "斯洛伐克"},
+            {"HU", "匈牙利"},
+            {"DE", "德国"},
+            {"AT", "奥地利"},
+            {"CH", "瑞士"},
+            {"LI", "列支敦士登"},
+            {"GB", "英国"},
+            {"IE", "爱尔兰"},
+            {"NL", "荷兰"},
+            {"BE", "比利时"},
+            {"LU", "卢森堡"},
+            {"FR", "法国"},
+            {"MC", "摩纳哥"},
+            {"IT", "意大利"},
+            {"VA", "梵蒂冈"},
+            {"SM", "圣马力诺"},
+            {"MT", "马耳他"},
+            {"ES", "西班牙"},
+            {"PT", "葡萄牙"},
+            {"AD", "安道尔"},
+            {"GR", "希腊"},
+            {"BG", "保加利亚"},
+            {"RO", "罗马尼亚"},
+            {"RS", "塞尔维亚"},
+            {"HR", "克罗地亚"},
+            {"SI", "斯洛文尼亚"},
+            {"BA", "波黑"},
+            {"ME", "黑山"},
+            {"AL", "阿尔巴尼亚"},
+            {"MK", "北马其顿"},
+            {"EG", "埃及"},
+            {"LY", "利比亚"},
+            {"TN", "突尼斯"},
+            {"DZ", "阿尔及利亚"},
+            {"MA", "摩洛哥"},
+            {"SD", "苏丹"},
+            {"SS", "南苏丹"},
+            {"ET", "埃塞俄比亚"},
+            {"ER", "厄立特里亚"},
+            {"SO", "索马里"},
+            {"DJ", "吉布提"},
+            {"KE", "肯尼亚"},
+            {"TZ", "坦桑尼亚"},
+            {"UG", "乌干达"},
+            {"RW", "卢旺达"},
+            {"BI", "布隆迪"},
+            {"SC", "塞舌尔"},
+            {"TD", "乍得"},
+            {"CF", "中非"},
+            {"CM", "喀麦隆"},
+            {"GQ", "赤道几内亚"},
+            {"GA", "加蓬"},
+            {"CG", "刚果共和国"},
+            {"CD", "刚果民主共和国"},
+            {"ST", "圣多美和普林西比"},
+            {"MR", "毛里塔尼亚"},
+            {"SN", "塞内加尔"},
+            {"GM", "冈比亚"},
+            {"ML", "马里"},
+            {"BF", "布基纳法索"},
+            {"GN", "几内亚"},
+            {"GW", "几内亚比绍"},
+            {"CV", "佛得角"},
+            {"SL", "塞拉利昂"},
+            {"LR", "利比里亚"},
+            {"CI", "科特迪瓦"},
+            {"GH", "加纳"},
+            {"TG", "多哥"},
+            {"BJ", "贝宁"},
+            {"NE", "尼日尔"},
+            {"NG", "尼日利亚"},
+            {"ZM", "赞比亚"},
+            {"AO", "安哥拉"},
+            {"ZW", "津巴布韦"},
+            {"MW", "马拉维"},
+            {"MZ", "莫桑比克"},
+            {"BW", "博茨瓦纳"},
+            {"NA", "纳米比亚"},
+            {"ZA", "南非"},
+            {"SZ", "斯威士兰"},
+            {"LS", "莱索托"},
+            {"MG", "马达加斯加"},
+            {"KM", "科摩罗"},
+            {"MU", "毛里求斯"},
+            {"CA", "加拿大"},
+            {"US", "美国"},
+            {"GU", "关岛"},
+            {"MX", "墨西哥"},
+            {"GT", "危地马拉"},
+            {"BZ", "伯利兹"},
+            {"SV", "萨尔瓦多"},
+            {"HN", "洪都拉斯"},
+            {"NI", "尼加拉瓜"},
+            {"CR", "哥斯达黎加"},
+            {"PA", "巴拿马"},
+            {"CU", "古巴"},
+            {"JM", "牙买加"},
+            {"HT", "海地"},
+            {"DO", "多米尼加"},
+            {"BS", "巴哈马"},
+            {"BB", "巴巴多斯"},
+            {"KN", "圣基茨和尼维斯"},
+            {"LC", "圣卢西亚"},
+            {"VC", "圣文森特和格林纳丁斯"},
+            {"GD", "格林纳达"},
+            {"TT", "特立尼达和多巴哥"},
+            {"CO", "哥伦比亚"},
+            {"VE", "委内瑞拉"},
+            {"GY", "圭亚那"},
+            {"SR", "苏里南"},
+            {"EC", "厄瓜多尔"},
+            {"PE", "秘鲁"},
+            {"BO", "玻利维亚"},
+            {"BR", "巴西"},
+            {"CL", "智利"},
+            {"AR", "阿根廷"},
+            {"UY", "乌拉圭"},
+            {"PY", "巴拉圭"},
+            {"AU", "澳大利亚"},
+            {"NZ", "新西兰"},
+            {"PG", "巴布亚新几内亚"},
+            {"SB", "所罗门群岛"},
+            {"VU", "瓦努阿图"},
+            {"FJ", "斐济"},
+            {"KI", "基里巴斯"},
+            {"NR", "瑙鲁"},
+            {"FM", "密克罗尼西亚"},
+            {"MH", "马绍尔群岛"},
+            {"PW", "帕劳"},
+            {"WS", "萨摩亚"},
+            {"TO", "汤加"},
+            {"TV", "图瓦卢"},
+            {"TW", "台湾"},
+            {"HK", "香港"},
+            {"MO", "澳门"},
+            {"XK", "科索沃"},
+            {"EH", "西撒哈拉"},
+            {"PR", "波多黎各"},
+            {"AQ", "南极"},
+            {"GL", "格陵兰"},
+            {"RE", "留尼汪"},
+            {"GF", "法属圭亚那"},
+            {"PF", "法属波利尼西亚"},
+            {"MF", "法属圣马丁"},
+            {"PM", "圣皮埃尔和密克隆群岛"},
+        };
+
         // 定义所有国家的名称和代码的映射
         QMap<QString, QString> countryMap = {
             {QStringLiteral("中国"), "CN"},
@@ -500,70 +710,56 @@ namespace NekoGui_fmt {
             {"冰岛", "IS"},
         };
 
-        // 遍历国家映射，判断代理名称中是否包含国家名称
         // 先检查特殊情况：印度尼西亚和印度
         if (name.contains(QStringLiteral("印度尼西亚")) || name.contains(QStringLiteral("印尼"))) {
-            return QStringLiteral("印度尼西亚") + " (ID)";
+            return QStringLiteral("印度尼西亚 Indonesia (ID)");
         }
         
         // 创建名称的大小写不敏感版本用于英文匹配
         QString nameLower = name.toLower();
         QString nameUpper = name.toUpper();
         
-        // 按优先级匹配：先匹配emoji，再匹配完整名称，最后匹配缩写
+        // 遍历国家映射，寻找匹配项
         for (auto it = countryMap.begin(); it != countryMap.end(); ++it) {
             QString key = it.key();
             QString code = it.value();
             
+            bool matched = false;
+            
             // 直接匹配（包含emoji和中文）
             if (name.contains(key)) {
-                // 对于中文全称，返回中文名称
-                if (key.length() > 2 && key.at(0).unicode() >= 0x4e00 && key.at(0).unicode() <= 0x9fff) {
-                    return key + " (" + code + ")";
+                matched = true;
+            }
+            // 大小写不敏感的英文匹配
+            else if (key.at(0).isLetter()) {
+                if (nameLower.contains(key.toLower()) || nameUpper.contains(key.toUpper())) {
+                    matched = true;
                 }
-                // 对于emoji，查找对应的中文名称
-                if (key.startsWith("🇦") || key.startsWith("🇧") || key.startsWith("🇨") || 
-                    key.startsWith("🇩") || key.startsWith("🇪") || key.startsWith("🇫") || 
-                    key.startsWith("🇬") || key.startsWith("🇭") || key.startsWith("🇮") || 
-                    key.startsWith("🇯") || key.startsWith("🇰") || key.startsWith("🇱") || 
-                    key.startsWith("🇲") || key.startsWith("🇳") || key.startsWith("🇴") || 
-                    key.startsWith("🇵") || key.startsWith("🇶") || key.startsWith("🇷") || 
-                    key.startsWith("🇸") || key.startsWith("🇹") || key.startsWith("🇺") || 
-                    key.startsWith("🇻") || key.startsWith("🇼") || key.startsWith("🇽") || 
-                    key.startsWith("🇾") || key.startsWith("🇿")) {
-                    // 查找对应的中文名称
-                    for (auto it2 = countryMap.begin(); it2 != countryMap.end(); ++it2) {
-                        if (it2.value() == code && it2.key().length() > 2 && 
-                            it2.key().at(0).unicode() >= 0x4e00 && it2.key().at(0).unicode() <= 0x9fff) {
-                            return it2.key() + " (" + code + ")";
-                        }
-                    }
-                    return key + " (" + code + ")";
-                }
-                // 对于英文名称，查找对应的中文名称
-                if (key.at(0).isLetter() && key.at(0).isLower()) {
-                    for (auto it2 = countryMap.begin(); it2 != countryMap.end(); ++it2) {
-                        if (it2.value() == code && it2.key().length() > 2 && 
-                            it2.key().at(0).unicode() >= 0x4e00 && it2.key().at(0).unicode() <= 0x9fff) {
-                            return it2.key() + " (" + code + ")";
-                        }
-                    }
-                }
-                return key + " (" + code + ")";
             }
             
-            // 大小写不敏感的英文匹配
-            if (key.at(0).isLetter()) {
-                if (nameLower.contains(key.toLower()) || nameUpper.contains(key.toUpper())) {
-                    // 查找对应的中文名称
-                    for (auto it2 = countryMap.begin(); it2 != countryMap.end(); ++it2) {
-                        if (it2.value() == code && it2.key().length() > 2 && 
-                            it2.key().at(0).unicode() >= 0x4e00 && it2.key().at(0).unicode() <= 0x9fff) {
-                            return it2.key() + " (" + code + ")";
+            if (matched) {
+                // 返回统一格式：中文名称 + 英文名称 + 代码
+                QString chineseName = codeToChineseName.value(code, "");
+                QString englishName = "";
+                
+                // 查找英文名称（优先选择较长的正式名称）
+                for (auto it2 = countryMap.begin(); it2 != countryMap.end(); ++it2) {
+                    if (it2.value() == code && it2.key().at(0).isLetter() && 
+                        it2.key().at(0).isUpper() && it2.key().length() > 2) {
+                        if (englishName.isEmpty() || it2.key().length() > englishName.length()) {
+                            englishName = it2.key();
                         }
                     }
-                    return key + " (" + code + ")";
                 }
+                
+                // 构建返回字符串
+                QString result = chineseName;
+                if (!englishName.isEmpty()) {
+                    result += " " + englishName;
+                }
+                result += " (" + code + ")";
+                
+                return result;
             }
         }
         
