@@ -264,7 +264,6 @@ namespace NekoGui_fmt {
 
         // 定义所有国家的名称和代码的映射
         QMap<QString, QString> countryMap = {
-            {QStringLiteral("中国"), "CN"},
             {QStringLiteral("日本"), "JP"},
             {QStringLiteral("韩国"), "KR"},
             {QStringLiteral("朝鲜"), "KP"},
@@ -479,7 +478,6 @@ namespace NekoGui_fmt {
             {QStringLiteral("🇫🇷"), "FR"},
             {QStringLiteral("🇬🇧"), "GB"},
             {QStringLiteral("🇸🇬"), "SG"},
-            {QStringLiteral("🇨🇳"), "CN"},
             {QStringLiteral("🇰🇷"), "KR"},
             {QStringLiteral("🇩🇪"), "DE"},
             {QStringLiteral("🇮🇹"), "IT"},
@@ -546,7 +544,6 @@ namespace NekoGui_fmt {
             {"Britain", "GB"},
             {"England", "GB"},
             {"Singapore", "SG"},
-            {"China", "CN"},
             {"Korea", "KR"},
             {"South Korea", "KR"},
             {"Germany", "DE"},
@@ -613,54 +610,6 @@ namespace NekoGui_fmt {
             {"Chilean", "CL"},
             {"New Zealand", "NZ"},
             {"Iceland", "IS"},
-            // 常见缩写和别名
-            {"HK", "HK"},
-            {"US", "US"},
-            {"JP", "JP"},
-            {"RU", "RU"},
-            {"CH", "CH"},
-            {"FR", "FR"},
-            {"GB", "GB"},
-            {"SG", "SG"},
-            {"CN", "CN"},
-            {"KR", "KR"},
-            {"DE", "DE"},
-            {"IT", "IT"},
-            {"ES", "ES"},
-            {"CA", "CA"},
-            {"AU", "AU"},
-            {"BR", "BR"},
-            {"IN", "IN"},
-            {"TW", "TW"},
-            {"MO", "MO"},
-            {"TH", "TH"},
-            {"MY", "MY"},
-            {"ID", "ID"},
-            {"PH", "PH"},
-            {"VN", "VN"},
-            {"NL", "NL"},
-            {"SE", "SE"},
-            {"NO", "NO"},
-            {"FI", "FI"},
-            {"DK", "DK"},
-            {"AT", "AT"},
-            {"PL", "PL"},
-            {"TR", "TR"},
-            {"UA", "UA"},
-            {"IE", "IE"},
-            {"BE", "BE"},
-            {"PT", "PT"},
-            {"GR", "GR"},
-            {"ZA", "ZA"},
-            {"EG", "EG"},
-            {"IL", "IL"},
-            {"SA", "SA"},
-            {"AE", "AE"},
-            {"MX", "MX"},
-            {"AR", "AR"},
-            {"CL", "CL"},
-            {"NZ", "NZ"},
-            {"IS", "IS"},
             // 地区别名
             // 简化名称映射（只保留不会误匹配的）
             {"港", "HK"},
@@ -685,7 +634,7 @@ namespace NekoGui_fmt {
         
         // 特殊处理印度（单独处理避免与印度尼西亚冲突）
         if (name.contains(QStringLiteral("印度")) && !name.contains(QStringLiteral("印度尼西亚"))) {
-            return QStringLiteral("印度 India (IN)");
+            return QStringLiteral("印度(IN)");
         }
         
         // 遍历国家映射，寻找匹配项
@@ -707,27 +656,11 @@ namespace NekoGui_fmt {
             }
             
             if (matched) {
-                // 返回统一格式：中文名称 + 英文名称 + 代码
+                // 返回统一格式：中文名称 + 代码
                 QString chineseName = codeToChineseName.value(code, "");
-                QString englishName = "";
-                
-                // 查找英文名称（优先选择较长的正式名称）
-                for (auto it2 = countryMap.begin(); it2 != countryMap.end(); ++it2) {
-                    if (it2.value() == code && it2.key().at(0).isLetter() && 
-                        it2.key().at(0).isUpper() && it2.key().length() > 2) {
-                        if (englishName.isEmpty() || it2.key().length() > englishName.length()) {
-                            englishName = it2.key();
-                        }
-                    }
-                }
-                
                 // 构建返回字符串
                 QString result = chineseName;
-                if (!englishName.isEmpty()) {
-                    result += " " + englishName;
-                }
                 result += " (" + code + ")";
-                
                 return result;
             }
         }
