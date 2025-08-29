@@ -274,6 +274,15 @@ namespace NekoGui {
         // Set country from display
         ent->bean->SetCountryFromDisplay();
 
+        // 将新节点添加到分组的order中
+        auto group = GetGroup(ent->gid);
+        if (group != nullptr) {
+            if (!group->order.contains(ent->id)) {
+                group->order.push_back(ent->id);
+                group->Save();
+            }
+        }
+
         ent->Save();
         return true;
     }
@@ -281,6 +290,15 @@ namespace NekoGui {
     void ProfileManager::DeleteProfile(int id) {
         if (id < 0) return;
         if (dataStore->started_id == id) return;
+        
+        // 从所有分组的order中移除该节点
+        for (const auto &[gid, group] : groups) {
+            if (group->order.contains(id)) {
+                group->order.removeAll(id);
+                group->Save();
+            }
+        }
+        
         profiles.erase(id);
         profilesIdOrder.removeAll(id);
         QFile(QStringLiteral("profiles/%1.json").arg(id)).remove();
@@ -288,16 +306,24 @@ namespace NekoGui {
 
     void ProfileManager::MoveProfile(const std::shared_ptr<ProxyEntity> &ent, int gid) {
         if (gid == ent->gid || gid < 0) return;
+        
+        // 从旧分组中移除节点
         auto oldGroup = GetGroup(ent->gid);
-        if (oldGroup != nullptr && !oldGroup->order.isEmpty()) {
+        if (oldGroup != nullptr) {
             oldGroup->order.removeAll(ent->id);
             oldGroup->Save();
         }
+        
+        // 添加节点到新分组
         auto newGroup = GetGroup(gid);
-        if (newGroup != nullptr && !newGroup->order.isEmpty()) {
-            newGroup->order.push_back(ent->id);
+        if (newGroup != nullptr) {
+            if (!newGroup->order.contains(ent->id)) {
+                newGroup->order.push_back(ent->id);
+            }
             newGroup->Save();
         }
+        
+        // 更新节点的分组ID并保存
         ent->gid = gid;
         ent->Save();
     }
@@ -384,17 +410,26 @@ namespace NekoGui {
     }
 
     QList<std::shared_ptr<ProxyEntity>> Group::ProfilesWithOrder() const {
-        return Profiles();
-        // if (order.isEmpty()) {
-        //     return Profiles();
-        // } else {
-        //     QList<std::shared_ptr<ProxyEntity>> ret;
-        //     for (auto _id: order) {
-        //         auto ent = profileManager->GetProfile(_id);
-        //         if (ent != nullptr) ret += ent;
-        //     }
-        //     return ret;
-        // }
+        if (order.isEmpty()) {
+            return Profiles();
+        } else {
+            QList<std::shared_ptr<ProxyEntity>> ret;
+            // 先按order顺序添加已排序的节点
+            for (auto _id: order) {
+                auto ent = profileManager->GetProfile(_id);
+                if (ent != nullptr && ent->gid == id) {
+                    ret += ent;
+                }
+            }
+            // 然后添加不在order中的新节点
+            auto allProfiles = Profiles();
+            for (const auto &profile: allProfiles) {
+                if (!order.contains(profile->id)) {
+                    ret += profile;
+                }
+            }
+            return ret;
+        }
     }
 
 } // namespace NekoGui
