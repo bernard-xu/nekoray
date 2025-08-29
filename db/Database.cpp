@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QDir>
 #include <QColor>
+#include <cstdlib>
+#include <ctime>
 
 namespace NekoGui {
 
@@ -307,25 +309,34 @@ namespace NekoGui {
     void ProfileManager::MoveProfile(const std::shared_ptr<ProxyEntity> &ent, int gid) {
         if (gid == ent->gid || gid < 0) return;
         
-        // 从旧分组中移除节点
-        auto oldGroup = GetGroup(ent->gid);
-        if (oldGroup != nullptr) {
-            oldGroup->order.removeAll(ent->id);
-            oldGroup->Save();
+        // 获取当前正在使用的节点
+        auto currentProfile = GetProfile(dataStore->started_id);
+        if (currentProfile == nullptr) {
+            // 如果没有当前正在使用的节点，则复制选中的节点
+            currentProfile = ent;
         }
         
-        // 添加节点到新分组
-        auto newGroup = GetGroup(gid);
-        if (newGroup != nullptr) {
-            if (!newGroup->order.contains(ent->id)) {
-                newGroup->order.push_back(ent->id);
+        // 创建当前正在使用节点的副本到新分组（保留原分组中的节点）
+        auto newProfile = std::make_shared<ProxyEntity>(*currentProfile);
+        newProfile->id = NewProfileID();
+        newProfile->gid = gid;
+        newProfile->fn = QStringLiteral("profiles/%1.json").arg(newProfile->id);
+        
+        // 添加新节点到profiles集合
+        profiles[newProfile->id] = newProfile;
+        profilesIdOrder.push_back(newProfile->id);
+        
+        // 将新节点添加到分组的order中
+        auto group = GetGroup(gid);
+        if (group != nullptr) {
+            if (!group->order.contains(newProfile->id)) {
+                group->order.push_back(newProfile->id);
+                group->Save();
             }
-            newGroup->Save();
         }
         
-        // 更新节点的分组ID并保存
-        ent->gid = gid;
-        ent->Save();
+        // 保存新节点
+        newProfile->Save();
     }
 
     std::shared_ptr<ProxyEntity> ProfileManager::GetProfile(int id) {
