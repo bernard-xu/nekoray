@@ -470,7 +470,6 @@ namespace NekoGui_fmt {
             {QStringLiteral("法属波利尼西亚"), "PF"},
             {QStringLiteral("法属圣马丁"), "MF"},
             {QStringLiteral("圣皮埃尔和密克隆群岛"), "PM"},
-            {QStringLiteral("印尼"), "ID"}, 
             // 国旗emoji识别
             {QStringLiteral("🇭🇰"), "HK"},
             {QStringLiteral("🇺🇸"), "US"},
@@ -663,61 +662,31 @@ namespace NekoGui_fmt {
             {"NZ", "NZ"},
             {"IS", "IS"},
             // 地区别名
+            // 简化名称映射（只保留不会误匹配的）
             {"港", "HK"},
-            {"美", "US"},
-            {"日", "JP"},
-            {"俄", "RU"},
-            {"瑞士", "CH"},
-            {"法", "FR"},
-            {"英", "GB"},
-            {"新", "SG"},
-            {"韩", "KR"},
-            {"德", "DE"},
-            {"意", "IT"},
-            {"西", "ES"},
-            {"加", "CA"},
-            {"澳", "AU"},
+            {"台湾", "TW"},
             {"巴西", "BR"},
-            {"印", "IN"},
-            {"台", "TW"},
             {"澳门", "MO"},
-            {"泰", "TH"},
-            {"马", "MY"},
-            {"菲", "PH"},
-            {"越", "VN"},
-            {"荷", "NL"},
             {"瑞典", "SE"},
-            {"挪", "NO"},
-            {"芬", "FI"},
-            {"丹", "DK"},
-            {"奥", "AT"},
-            {"波", "PL"},
-            {"土", "TR"},
-            {"乌", "UA"},
             {"爱尔兰", "IE"},
-            {"比", "BE"},
-            {"葡", "PT"},
-            {"希", "GR"},
             {"南非", "ZA"},
             {"埃及", "EG"},
-            {"以", "IL"},
             {"沙特", "SA"},
             {"阿联酋", "AE"},
-            {"墨", "MX"},
             {"阿根廷", "AR"},
             {"智利", "CL"},
             {"新西兰", "NZ"},
             {"冰岛", "IS"},
         };
 
-        // 先检查特殊情况：印度尼西亚和印度
-        if (name.contains(QStringLiteral("印度尼西亚")) || name.contains(QStringLiteral("印尼"))) {
-            return QStringLiteral("印度尼西亚 Indonesia (ID)");
-        }
-        
-        // 创建名称的大小写不敏感版本用于英文匹配
+        // 创建名称的大小写不敏感版本用于匹配
         QString nameLower = name.toLower();
         QString nameUpper = name.toUpper();
+        
+        // 特殊处理印度（单独处理避免与印度尼西亚冲突）
+        if (name.contains(QStringLiteral("印度")) && !name.contains(QStringLiteral("印度尼西亚"))) {
+            return QStringLiteral("印度 India (IN)");
+        }
         
         // 遍历国家映射，寻找匹配项
         for (auto it = countryMap.begin(); it != countryMap.end(); ++it) {
